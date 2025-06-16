@@ -23,75 +23,62 @@ const StoreContextProvider = (props) => {
   //     }
   // }
 
-  const parseTimeTo24Hour = (timeStr) => {
-    const [time, modifier] = timeStr.toLowerCase().split(" ");
-    let [hours, minutes] = time.split(":").map(Number);
+ const parseTimeToMinutes = (timeStr) => {
+  const [time, modifier] = timeStr.toLowerCase().split(" ");
+  let [hours, minutes] = time.split(":").map(Number);
 
-    if (modifier === "pm" && hours !== 12) hours += 12;
-    if (modifier === "am" && hours === 12) hours = 0;
+  if (modifier === "pm" && hours !== 12) hours += 12;
+  if (modifier === "am" && hours === 12) hours = 0;
 
-    return { hours, minutes };
-  };
+  return hours * 60 + minutes;
+};
 
-  const isCurrentTimeInRange = (startStr, endStr) => {
+// Define cutoff times per category
+const categoryCutoffMap = {
+  Breakfast: "12:00 pm",
+  Lunch: "5:00 pm",
+  Snacks: "8:00 pm",
+  Dinner: "10:00 pm",
+};
+
+const addToCart = async (itemId) => {
+  const item = food_list.find((i) => i._id === itemId);
+  if (!item) {
+    toast.error("Item not found.");
+    return;
+  }
+
+  const category = item.category;
+  const cutoffTime = categoryCutoffMap[category];
+
+  if (cutoffTime) {
     const now = new Date();
     const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    const cutoffMinutes = parseTimeToMinutes(cutoffTime);
 
-    const start = parseTimeTo24Hour(startStr);
-    const end = parseTimeTo24Hour(endStr);
-
-    const startMinutes = start.hours * 60 + start.minutes;
-    const endMinutes = end.hours * 60 + end.minutes;
-
-    return nowMinutes >= startMinutes && nowMinutes < endMinutes;
-  };
-
-  const addToCart = async (itemId) => {
-    const item = food_list.find((i) => i._id === itemId);
-    if (!item) {
-       toast.error("Item not found.");
-      return;
-    }
-
-    const category = item.category;
-    const categoryTimeMap = {
-      Breakfast: ["7:00 am", "11:00 am"],
-      Lunch: ["12:00 pm", "4:00 pm"],
-      Snacks: ["5:00 pm", "7:00 pm"],
-      Dinner: ["8:00 pm", "10:00 pm"],
-    };
-
-    const timeRange = categoryTimeMap[category];
-    if (!timeRange) {
-       toast.error(`No time slot defined for ${category}`);
-      return;
-    }
-
-    const [startTime, endTime] = timeRange;
-    const isValid = isCurrentTimeInRange(startTime, endTime);
-
-    if (!isValid) {
-       toast.error(
-        `You can only add ${category} items between ${startTime} and ${endTime}.`
+    if (nowMinutes > cutoffMinutes) {
+      toast.error(
+        `${category} items can no longer be added. Please select from categories still available.`
       );
       return;
     }
+  }
 
-    // Add item
-    if (!cartItems[itemId]) {
-      setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
-    } else {
-      setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    }
+  // Proceed to add item
+  if (!cartItems[itemId]) {
+    setCartItems((prev) => ({ ...prev, [itemId]: 1 }));
+  } else {
+    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
+  }
 
-    if (token) {
-      await axios.post(
-        url + "/api/cart/add",
-        { itemId },
-        { headers: { token } }
-      );
-    }
-  };
+  if (token) {
+    await axios.post(
+      url + "/api/cart/add",
+      { itemId },
+      { headers: { token } }
+    );
+  }
+};
 
   const removeFromCart = async (itemId) => {
     setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));

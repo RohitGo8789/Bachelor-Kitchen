@@ -95,6 +95,36 @@
     border-radius: 4px;
 }
 
+.delivery-slot {
+    margin: 15px 0 25px 65px;
+    padding: 10px 15px;
+    background-color: #f9f9f9;
+    border-left: 4px solid tomato;
+    border-radius: 4px;
+    width: fit-content;
+}
+
+.delivery-slot p {
+    font-weight: 500;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.delivery-slot select {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
+    transition: border 0.2s ease-in-out;
+}
+
+.delivery-slot select:hover {
+    border-color: tomato;
+}
+
+
 @media (max-width:750px){
     .cart-bottom{
         flex-direction: column-reverse;

@@ -54,17 +54,17 @@ export const assets = {
 export const menu_list = [
     {
         menu_name: "Breakfast",
-        menu_time: "7:00 am - 11:00 am",
+        menu_time: "7:00 am - 12:00 pm",
         menu_image: breakfast
     },
     {
         menu_name: "Lunch",
-        menu_time: "12:00 pm - 04:00 pm",
+        menu_time: "12:00 pm - 05:00 pm",
         menu_image: lunch
     },
     {
         menu_name: "Snacks",
-        menu_time: "5:00 pm - 07:00 pm",
+        menu_time: "5:00 pm - 08:00 pm",
         menu_image: snacks
     },
     {
