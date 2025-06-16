@@ -124,6 +124,9 @@
     border-color: tomato;
 }
 
+.cart-item-block {
+    margin-bottom: 10px; /* consistent spacing between each item+slot block */
+}
 
 @media (max-width:750px){
     .cart-bottom{

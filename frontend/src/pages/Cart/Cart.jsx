@@ -1,3 +1,4 @@
+// Cart.jsx
 import React, { useContext, useState } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../components/context/StoreContext';
@@ -5,18 +6,17 @@ import { useNavigate } from 'react-router-dom';
 
 const deliveryWindows = {
   Breakfast: ['7:00 AM - 9:00 AM', '9:00 AM - 12:00 PM'],
-  Lunch: ['12:00 PM - 2:00 PM', '2:00 PM - 4:00 PM'],
-  Dinner: ['6:00 PM - 8:00 PM', '8:00 PM - 10:00 PM'],
-  Snacks: ['4:00 PM - 6:00 PM'],
-  default: ['9:00 AM - 9:00 PM']
+  Lunch: ['12:00 PM - 3:00 PM', '3:00 PM - 5:00 PM'],
+  Dinner: ['8:00 PM - 10:00 PM'],
+  Snacks: ['5:00 PM - 6:00 PM', '6:00 PM - 8:00 PM'],
+  default: ['6:00 AM - 8:00 PM']
 };
 
-// Helper to get only future slots
 const getValidSlots = (slots) => {
   const now = new Date();
 
   return slots.filter(slot => {
-    const endTimeStr = slot.split(' - ')[1]; // e.g., "9:00 AM"
+    const endTimeStr = slot.split(' - ')[1];
     const [time, modifier] = endTimeStr.split(' ');
     let [hours, minutes] = time.split(':').map(Number);
 
@@ -62,7 +62,7 @@ const Cart = () => {
             const itemSlots = getValidSlots(rawSlots);
 
             return (
-              <div key={item._id}>
+              <div key={item._id} className="cart-item-block">
                 <div className="cart-items-title cart-items-item">
                   <img src={url + '/images/' + item.image} alt={item.name} />
                   <p>{item.name}</p>
@@ -72,8 +72,8 @@ const Cart = () => {
                   <p onClick={() => removeFromCart(item._id)} className='cross'>x</p>
                 </div>
 
-                <div className="delivery-slot" style={{ marginLeft: '130px', marginTop: '10px' }}>
-                  <p style={{ marginBottom: '5px' }}>
+                <div className="delivery-slot">
+                  <p>
                     Select delivery time for <strong>{item.name}</strong>:
                   </p>
                   <select
