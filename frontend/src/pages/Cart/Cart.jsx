@@ -3,6 +3,7 @@ import React, { useContext, useState } from 'react';
 import './Cart.css';
 import { StoreContext } from '../../components/context/StoreContext';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const deliveryWindows = {
   Breakfast: ['7:00 AM - 9:00 AM', '9:00 AM - 12:00 PM'],
@@ -125,7 +126,7 @@ const Cart = () => {
                 cartItems[item._id] > 0 && !deliverySlotsPerItem[item._id]
               );
               if (missingSlots.length > 0) {
-                alert(`Please select delivery time for: ${missingSlots.map(i => i.name).join(', ')}`);
+                toast.error(`Please select delivery time for: ${missingSlots.map(i => i.name).join(', ')}`);
                 return;
               }
 
